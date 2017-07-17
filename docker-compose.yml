@@ -1,0 +1,27 @@
+version: '2'
+services:
+  db:
+    build: mariadb
+    restart: always
+    ports:
+      - 3306:3306
+    volumes:
+      - ./databases:/var/lib/mysql
+      - ./logs/mariadb/mysql.err:/var/log/mysql.err
+      - ./logs/mariadb/mysql.log:/var/log/mysql.log
+    environment:
+      MYSQL_DATABASE: redmine
+      MYSQL_ROOT_PASSWORD: carizy
+      MARIADB_PORT: ${MARIADB_PORT}
+ 
+  redmine:
+    image: redmine
+    ports:
+      - 8080:3000
+    volumes:
+      - ./redmine:/usr/src/redmine/files
+    links:
+      - db
+    environment:
+      REDMINE_DB_MYSQL: db
+      REDMINE_DB_PASSWORD: carizy
